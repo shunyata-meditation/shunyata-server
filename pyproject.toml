@@ -1,0 +1,9 @@
+[project]
+name = "shunyata-server"
+version = "0.1.0"
+description = "Backend server for Shunyata meditation app"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "django>=6.0.5",
+]
