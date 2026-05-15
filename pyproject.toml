@@ -10,4 +10,5 @@ dependencies = [
     "djangorestframework-simplejwt>=5.5.0",
     "python-dotenv>=1.2.2",
     "psycopg2-binary>=2.9.10",
+    "gunicorn>=23.0.0",
 ]
