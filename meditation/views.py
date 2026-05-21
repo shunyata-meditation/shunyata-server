@@ -34,6 +34,10 @@ def timer_page(request):
     return render(request, "meditation/timer.html")
 
 
+def stats_page(request):
+    return render(request, "meditation/stats.html")
+
+
 class MeditationSessionViewSet(viewsets.ModelViewSet):
     serializer_class = MeditationSessionSerializer
     permission_classes = [permissions.IsAuthenticated]
