@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from django.contrib.auth.forms import User
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.shortcuts import render
 from rest_framework import permissions, status, viewsets
@@ -54,6 +54,25 @@ class MeditationSessionViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+def _send_verification_email(user: User) -> None:
+    verification_token = EmailVerificationToken.create_token(user)
+    verification_url = VERIFICATION_URL.format(
+        frontend_url=settings.FRONTEND_URL,
+        token=verification_token.token,
+    )
+    message = VERIFICATION_EMAIL_MESSAGE.format(
+        verification_url=verification_url,
+        expiry_hours=settings.VERIFICATION_EMAIL_EXPIRY_HOURS,
+    )
+    send_mail(
+        subject=VERIFICATION_EMAIL_SUBJECT,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],  # type: ignore
+        fail_silently=False,
+    )
+
+
 class UserRegistrationView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -63,26 +82,7 @@ class UserRegistrationView(APIView):
         if serializer.is_valid():
             user: User = serializer.save()  # type: ignore
             logger.info(f"User created: {user.username}")
-
-            verification_token = EmailVerificationToken.create_token(user)
-            verification_url = VERIFICATION_URL.format(
-                frontend_url=settings.FRONTEND_URL,
-                token=verification_token.token,
-            )
-
-            message = VERIFICATION_EMAIL_MESSAGE.format(
-                verification_url=verification_url,
-                expiry_hours=settings.VERIFICATION_EMAIL_EXPIRY_HOURS,
-            )
-
-            send_mail(
-                subject=VERIFICATION_EMAIL_SUBJECT,
-                message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],  # type: ignore
-                fail_silently=False,
-            )
-
+            _send_verification_email(user)
             return Response(
                 {
                     "message": "Registration successful. Please check your email to verify your account."

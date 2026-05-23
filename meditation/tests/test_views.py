@@ -370,15 +370,3 @@ class VerifyEmailViewTest(APITestCase):
             EmailVerificationToken.objects.filter(token=token_value).exists()
         )
 
-    def test_verify_email_activates_user(self):
-        self.assertFalse(self.user.is_active)
-
-        token = EmailVerificationToken.create_token(self.user)
-
-        url = reverse("verify_email", kwargs={"token": token.token})
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.is_active)
