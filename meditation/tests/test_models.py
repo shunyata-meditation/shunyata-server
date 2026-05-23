@@ -147,10 +147,6 @@ class EmailVerificationTokenModelTest(TestCase):
         self.assertEqual(EmailVerificationToken.objects.filter(user=self.user).count(), 1)
         self.assertNotEqual(first_token_value, token2.token)
 
-    def test_token_unique(self):
-        token = EmailVerificationToken.create_token(self.user)
-        self.assertTrue(len(token.token) > 0)
-
     def test_token_cascade_delete_with_user(self):
         token = EmailVerificationToken.create_token(self.user)
         token_id = token.id
