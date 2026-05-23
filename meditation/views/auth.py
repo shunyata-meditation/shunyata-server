@@ -3,8 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
-from django.shortcuts import render
-from rest_framework import permissions, status, viewsets
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -13,45 +12,10 @@ from meditation.constants import (
     VERIFICATION_EMAIL_SUBJECT,
     VERIFICATION_URL,
 )
-from meditation.models import EmailVerificationToken, MeditationSession
-from meditation.serializers import (
-    MeditationSessionSerializer,
-    UserRegistrationSerializer,
-)
+from meditation.models import EmailVerificationToken
+from meditation.serializers import UserRegistrationSerializer
 
 logger = logging.getLogger(__name__)
-
-
-def index(request):
-    return render(request, "meditation/index.html")
-
-
-def register_page(request):
-    return render(request, "meditation/register.html")
-
-
-def timer_page(request):
-    return render(request, "meditation/timer.html")
-
-
-def stats_page(request):
-    return render(request, "meditation/stats.html")
-
-
-def login_page(request):
-    context = {"allowed_redirect_domains": settings.ALLOWED_REDIRECT_DOMAINS}
-    return render(request, "meditation/login.html", context)
-
-
-class MeditationSessionViewSet(viewsets.ModelViewSet):
-    serializer_class = MeditationSessionSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return MeditationSession.objects.filter(user=self.request.user)  # type: ignore[return-value]
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
 
 def _send_verification_email(user: User) -> None:
