@@ -131,6 +131,29 @@ uv run python manage.py test meditation.tests.test_serializers
 
 The project includes a `Dockerfile` for containerised deployment. It uses `gunicorn` with 3 workers and serves static files via WhiteNoise.
 
+### Using the pre-built image (recommended)
+
+Images are published to GitHub Container Registry on every push to `main` and on version tags:
+
+```bash
+# latest build from main
+docker pull ghcr.io/shunyata-meditation/shunyata-server:latest
+
+# specific commit
+docker pull ghcr.io/shunyata-meditation/shunyata-server:f4db0ed
+
+# specific release
+docker pull ghcr.io/shunyata-meditation/shunyata-server:1.2.0
+```
+
+Run the pulled image:
+
+```bash
+docker run -p 8000:8000 --env-file .env ghcr.io/shunyata-meditation/shunyata-server:latest
+```
+
+### Building locally
+
 ```bash
 docker build -t shunyata-server .
 docker run -p 8000:8000 --env-file .env shunyata-server
