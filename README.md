@@ -61,6 +61,7 @@ The server will be available at `http://localhost:8000`.
 | `DB_PASSWORD` | PostgreSQL password | `""` |
 | `DB_HOST` | PostgreSQL host | `localhost` |
 | `DB_PORT` | PostgreSQL port | `5432` |
+| `DB_SSLMODE` | PostgreSQL SSL mode (`prefer` for local, `require` for hosted DBs like Neon) | `prefer` |
 | `EMAIL_BACKEND` | Django email backend | `smtp.EmailBackend` |
 | `EMAIL_HOST` | SMTP host | `smtp.gmail.com` |
 | `EMAIL_PORT` | SMTP port | `587` |
